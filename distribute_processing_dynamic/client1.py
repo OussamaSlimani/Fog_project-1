@@ -46,7 +46,7 @@ def receive_data(client_socket):
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('192.168.1.15', 8095))
+    client_socket.connect(('10.26.12.107', 8095))
     print("Client connected to server")
 
     try:

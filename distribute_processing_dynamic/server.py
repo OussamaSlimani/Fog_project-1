@@ -92,7 +92,7 @@ def handle_client(client_socket, addr, image_data, results, object_assignment):
 def start_server(image_path):
     """Initialize the server, manage client connections, and aggregate results."""
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.bind(("192.168.1.15", 8095))  
+    server_socket.bind(("10.26.12.107", 8095))  
     server_socket.listen(4)  # Listen for up to 4 clients
 
     print("Server is waiting for clients to connect...")

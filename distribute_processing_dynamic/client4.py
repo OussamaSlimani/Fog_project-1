@@ -30,23 +30,33 @@ def detect_object(image_data, class_ids, model_path='yolov8n.pt'):
 
 # Data Reception
 def receive_data(client_socket):
+    # First, receive the length of the data (8 bytes)
     length_bytes = client_socket.recv(8)
+    if not length_bytes:
+        raise Exception("Failed to receive data length from server")
+
     data_length = int.from_bytes(length_bytes, byteorder='big')
     print(f"Client expecting {data_length} bytes of data")
+
+    # Now receive the data in chunks
     data = b""
     while len(data) < data_length:
-        packet = client_socket.recv(4096)
+        packet = client_socket.recv(min(4096, data_length - len(data)))  # Ensure we don't over-read
         if not packet:
-            break
+            raise Exception("Connection closed before receiving all data")
         data += packet
 
-    print(f"Client received {len(data)} bytes")
-    
+    print(f"Client received {len(data)} bytes (expected {data_length} bytes)")
+
+    if len(data) != data_length:
+        raise Exception(f"Data size mismatch: expected {data_length} bytes, received {len(data)} bytes")
+
     return pickle.loads(data)
+
 
 def start_client():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    client_socket.connect(('192.168.1.15', 8095))
+    client_socket.connect(('10.26.15.31', 8095))
     print("Client connected to server")
 
     try:
